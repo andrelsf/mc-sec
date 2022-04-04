@@ -1,0 +1,28 @@
+quarkus:
+  profile: ${QUARKUS_PROFILE:dev}
+  application:
+    name: ${QUARKUS_APP_NAME:mcsec}
+  shutdown:
+    timeout: 5
+  banner:
+    enabled: false
+  http:
+    port: ${QUARKUS_HTTP_PORT:8091}
+  log:
+    console:
+      enable: true
+      level: DEBUG
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
+mp:
+  messaging:
+    incoming:
+      # Configuring the incoming channel (reading from Kafka)
+      sec-new-order:
+        connector: smallrye-kafka
+        topic: sec-new-order
+        value:
+          deserializer: br.dev.multicode.utils.deserializers.OrderMessageDeserializer
