@@ -8,6 +8,18 @@ quarkus:
     enabled: false
   http:
     port: ${QUARKUS_HTTP_PORT:8091}
+  datasource:
+    db-kind: ${QUARKUS_DATASOURCE_KIND:postgresql}
+    jdbc:
+      url: ${QUARKUS_DATASOURCE_JDBC_URL:jdbc:postgresql://10.200.0.201:5432/mcsec}
+    username: ${QUARKUS_DATASOURCE_USERNAME:mcsec}
+    password: ${QUARKUS_DATASOURCE_PASSWORD:mcsec}
+  hibernate-orm:
+    database:
+      generation: none
+  liquibase:
+    migrate-at-start: true
+    change-log: "liquibase/changelog.yml"
   log:
     console:
       enable: true
@@ -26,3 +38,10 @@ mp:
         topic: sec-new-order
         value:
           deserializer: br.dev.multicode.utils.deserializers.OrderMessageDeserializer
+    outgoing:
+      # Configuring the outgoing channel (writing to Kafka)
+      sec-inventory:
+        connector: smallrye-kafka
+        topic: sec-inventory
+        value:
+          serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
