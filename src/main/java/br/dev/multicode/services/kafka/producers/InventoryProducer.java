@@ -33,15 +33,15 @@ public class InventoryProducer {
   {
     logger.infof("Start of send message to Kafka topic inventory");
 
-//    emitter.send(Message.of(orderMessage)
-//        .withAck(() -> {
-//          logger.infof("Message sent successfully. eventId=%s", orderMessage.getEventId());
-//          return CompletableFuture.completedFuture(null);
-//        })
-//        .withNack(throwable -> {
-//          logger.infof("Message sent failed. ERROR: %s", throwable.getMessage());
-//          return CompletableFuture.completedFuture(null);
-//        }));
+    emitter.send(Message.of(orderMessage)
+        .withAck(() -> {
+          logger.infof("Message sent successfully. eventId=%s", orderMessage.getEventId());
+          return CompletableFuture.completedFuture(null);
+        })
+        .withNack(throwable -> {
+          logger.infof("Message sent failed. ERROR: %s", throwable.getMessage());
+          return CompletableFuture.completedFuture(null);
+        }));
 
     return Uni.createFrom().voidItem();
   }
