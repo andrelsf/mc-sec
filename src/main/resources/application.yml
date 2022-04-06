@@ -38,6 +38,11 @@ mp:
         topic: sec-new-order
         value:
           deserializer: br.dev.multicode.utils.deserializers.OrderMessageDeserializer
+      sec-response-status:
+        connector: smallrye-kafka
+        topic: sec-response-status
+        value:
+          deserializer: br.dev.multicode.utils.deserializers.OrderInventoryStatusDeserializer
     outgoing:
       # Configuring the outgoing channel (writing to Kafka)
       sec-inventory:
