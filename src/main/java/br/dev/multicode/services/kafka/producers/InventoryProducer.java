@@ -39,7 +39,7 @@ public class InventoryProducer {
           return CompletableFuture.completedFuture(null);
         })
         .withNack(throwable -> {
-          logger.infof("Message sent failed. ERROR: %s", throwable.getMessage());
+          logger.errorf("Message sent failed. ERROR: %s", throwable.getMessage());
           return CompletableFuture.completedFuture(null);
         }));
 
