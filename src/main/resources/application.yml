@@ -55,8 +55,8 @@ mp:
         topic: sec-order-status
         value:
           serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
-      sec-payment:
+      sec-payments:
         connector: smallrye-kafka
-        topic: sec-payment
+        topic: sec-payments
         value:
           serializer: io.quarkus.kafka.client.serialization.JsonbSerializer
