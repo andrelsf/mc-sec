@@ -29,8 +29,8 @@ public class OrderConsumer {
     OrderMessage orderMessageReceived = orderMessage.getPayload();
     logger.infof("%s - Got a order message: %s", metadata.getTopic(), orderMessageReceived.getOrderId());
 
-    inventoryProducer.doNotification(orderMessageReceived);
     orderSecEventService.create(orderMessageReceived);
+    inventoryProducer.doNotification(orderMessageReceived);
 
     return orderMessage.ack();
   }
