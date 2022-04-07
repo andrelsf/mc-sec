@@ -57,6 +57,7 @@ public class OrderSecEvent extends PanacheEntityBase {
   public OrderPaymentMessage toOrderPaymentMessage()
   {
     return OrderPaymentMessage.builder()
+        .eventId(UUID.fromString(eventId))
         .orderId(UUID.fromString(orderId))
         .userId(UUID.fromString(userId))
         .price(price)
