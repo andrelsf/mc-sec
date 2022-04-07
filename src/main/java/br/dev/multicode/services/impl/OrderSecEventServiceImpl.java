@@ -1,6 +1,7 @@
 package br.dev.multicode.services.impl;
 
 import br.dev.multicode.entities.OrderSecEvent;
+import br.dev.multicode.models.CurrentOrderStatus;
 import br.dev.multicode.models.OrderMessage;
 import br.dev.multicode.repositories.OrderSecEventRepository;
 import br.dev.multicode.services.OrderSecEventService;
@@ -17,5 +18,11 @@ public class OrderSecEventServiceImpl implements OrderSecEventService {
   public void create(OrderMessage orderMessage)
   {
     repository.save(OrderSecEvent.of(orderMessage));
+  }
+
+  @Override
+  public OrderSecEvent updateStatus(CurrentOrderStatus currentOrderStatus)
+  {
+    return repository.updateStatusBy(currentOrderStatus.getOrderId(), currentOrderStatus.getStatus());
   }
 }
