@@ -17,7 +17,7 @@ public class OrderPaymentProducer {
   private final Logger logger = Logger.getLogger(this.getClass());
 
   @Inject
-  @Channel("sec-payment")
+  @Channel("sec-payments")
   Emitter<OrderPaymentMessage> emitter;
 
   public void doNotification(OrderPaymentMessage orderPaymentMessage)
