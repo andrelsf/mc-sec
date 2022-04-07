@@ -1,9 +1,12 @@
 package br.dev.multicode.entities;
 
 import br.dev.multicode.enums.OrderStatus;
+import br.dev.multicode.enums.TypePayment;
 import br.dev.multicode.models.OrderMessage;
+import br.dev.multicode.models.OrderPaymentMessage;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import java.math.BigDecimal;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -40,13 +43,24 @@ public class OrderSecEvent extends PanacheEntityBase {
   @Column(nullable = false)
   private BigDecimal price;
 
-  public static OrderSecEvent of(OrderMessage orderMessage) {
+  public static OrderSecEvent of(OrderMessage orderMessage)
+  {
     return OrderSecEvent.builder()
         .eventId(orderMessage.getEventId().toString())
         .orderId(orderMessage.getOrderId().toString())
         .userId(orderMessage.getUserId().toString())
         .status(orderMessage.getStatus())
         .price(orderMessage.getPrice())
+        .build();
+  }
+
+  public OrderPaymentMessage toOrderPaymentMessage()
+  {
+    return OrderPaymentMessage.builder()
+        .orderId(UUID.fromString(orderId))
+        .userId(UUID.fromString(userId))
+        .price(price)
+        .typePayment(TypePayment.CREDIT_CARD)
         .build();
   }
 }
