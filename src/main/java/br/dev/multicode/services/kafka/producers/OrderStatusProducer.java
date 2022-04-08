@@ -2,7 +2,6 @@ package br.dev.multicode.services.kafka.producers;
 
 import br.dev.multicode.models.CurrentOrderStatus;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.infrastructure.Infrastructure;
 import java.util.concurrent.CompletableFuture;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,16 +19,7 @@ public class OrderStatusProducer {
   @Channel("sec-order-status")
   Emitter<CurrentOrderStatus> emitter;
 
-  public void doNotification(CurrentOrderStatus currentOrderStatus)
-  {
-    Uni.createFrom()
-        .item(currentOrderStatus)
-        .emitOn(Infrastructure.getDefaultWorkerPool())
-        .subscribe()
-        .with(this::sendToKafka, Throwable::new);
-  }
-
-  private Uni<Void> sendToKafka(final CurrentOrderStatus currentOrderStatus)
+  public Uni<Void> sendToKafka(final CurrentOrderStatus currentOrderStatus)
   {
     logger.infof("Start of send message to kafka topic sec-order-status");
 
