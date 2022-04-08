@@ -6,6 +6,8 @@ import br.dev.multicode.models.CurrentOrderStatus;
 import br.dev.multicode.models.OrderProcessingStatus;
 import br.dev.multicode.services.NotificationService;
 import br.dev.multicode.services.OrderSecEventService;
+import br.dev.multicode.services.kafka.producers.OrderPaymentProducer;
+import br.dev.multicode.services.kafka.producers.OrderStatusProducer;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import io.smallrye.reactive.messaging.kafka.api.IncomingKafkaRecordMetadata;
 import java.util.concurrent.CompletionStage;
@@ -20,7 +22,9 @@ public class OrderResponseStatusConsumer {
 
   private final Logger log = Logger.getLogger(this.getClass());
 
+  @Inject OrderStatusProducer orderStatusProducer;
   @Inject NotificationService notificationService;
+  @Inject OrderPaymentProducer orderPaymentProducer;
   @Inject OrderSecEventService orderSecEventService;
 
   @Blocking
@@ -37,10 +41,10 @@ public class OrderResponseStatusConsumer {
     final CurrentOrderStatus currentOrderStatus = new CurrentOrderStatus(
         orderProcessingStatusReceived.getOrderId(), orderProcessingStatusReceived.getStatus());
 
-    notificationService.doNotificationOrderService(currentOrderStatus);
+    notificationService.doNotification(currentOrderStatus, orderStatusProducer);
     final OrderSecEvent orderSecEvent = orderSecEventService.updateStatus(currentOrderStatus);
     if (orderProcessingStatusReceived.getStatus().equals(OrderStatus.RESERVED_PRODUCTS)) {
-      notificationService.doNotificationOrderPayment(orderSecEvent.toOrderPaymentMessage());
+      notificationService.doNotification(orderSecEvent.toOrderPaymentMessage(), orderPaymentProducer);
     }
 
     return orderProcessingStatus.ack();

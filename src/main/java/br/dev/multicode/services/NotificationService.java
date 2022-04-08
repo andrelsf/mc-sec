@@ -1,11 +1,9 @@
 package br.dev.multicode.services;
 
-import br.dev.multicode.models.CurrentOrderStatus;
-import br.dev.multicode.models.OrderPaymentMessage;
+import br.dev.multicode.services.kafka.producers.ProducerService;
 
 public interface NotificationService {
 
-  void doNotificationOrderService(CurrentOrderStatus currentOrderStatus);
-  void doNotificationOrderPayment(OrderPaymentMessage toOrderPaymentMessage);
+  <T> void doNotification(T message, ProducerService producerService);
 
 }

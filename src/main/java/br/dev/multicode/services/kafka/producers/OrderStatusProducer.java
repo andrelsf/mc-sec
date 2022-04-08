@@ -11,7 +11,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
-public class OrderStatusProducer {
+public class OrderStatusProducer implements ProducerService {
 
   private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -19,13 +19,14 @@ public class OrderStatusProducer {
   @Channel("sec-order-status")
   Emitter<CurrentOrderStatus> emitter;
 
-  public Uni<Void> sendToKafka(final CurrentOrderStatus currentOrderStatus)
+  @Override
+  public <T> Uni<Void> sendToKafka(T message)
   {
     logger.infof("Start of send message to kafka topic sec-order-status");
 
-    emitter.send(Message.of(currentOrderStatus)
+    emitter.send(Message.of((CurrentOrderStatus) message)
       .withAck(() -> {
-        logger.infof("Message sent successfully. orderId=%s", currentOrderStatus.getOrderId());
+        logger.infof("Message sent successfully.");
         return CompletableFuture.completedFuture(null);
       })
       .withNack(throwable -> {

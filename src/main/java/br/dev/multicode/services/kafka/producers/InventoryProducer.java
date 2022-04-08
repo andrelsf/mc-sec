@@ -13,7 +13,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
-public class InventoryProducer {
+public class InventoryProducer implements ProducerService {
 
   private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -21,21 +21,14 @@ public class InventoryProducer {
   @Channel("sec-inventory")
   Emitter<OrderMessage> emitter;
 
-  public void doNotification(OrderMessage orderMessage) {
-    Uni.createFrom()
-        .item(orderMessage)
-        .emitOn(Infrastructure.getDefaultWorkerPool())
-        .subscribe()
-        .with(this::sendOrderToKafka, Throwable::new);
-  }
-
-  private Uni<Void> sendOrderToKafka(final OrderMessage orderMessage)
+  @Override
+  public <T> Uni<Void> sendToKafka(T message)
   {
     logger.infof("Start of send message to Kafka topic inventory");
 
-    emitter.send(Message.of(orderMessage)
+    emitter.send(Message.of((OrderMessage) message)
         .withAck(() -> {
-          logger.infof("Message sent successfully. eventId=%s", orderMessage.getEventId());
+          logger.infof("Message sent successfully.");
           return CompletableFuture.completedFuture(null);
         })
         .withNack(throwable -> {

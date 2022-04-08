@@ -11,7 +11,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
-public class OrderPaymentProducer {
+public class OrderPaymentProducer implements ProducerService {
 
   private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -19,13 +19,14 @@ public class OrderPaymentProducer {
   @Channel("sec-payment")
   Emitter<OrderPaymentMessage> emitter;
 
-  public Uni<Void> sendOrderPaymentToKafka(final OrderPaymentMessage orderPaymentMessage)
+  @Override
+  public <T> Uni<Void> sendToKafka(T message)
   {
-    logger.infof("Start of sending the payment message. orderId=%s", orderPaymentMessage.getOrderId());
+    logger.infof("Start of sending the payment message.");
 
-    emitter.send(Message.of(orderPaymentMessage)
+    emitter.send(Message.of((OrderPaymentMessage) message)
         .withAck(() -> {
-          logger.infof("Message sent successfully. orderId=%s", orderPaymentMessage.getOrderId());
+          logger.infof("Message sent successfully.");
           return CompletableFuture.completedFuture(null);
         })
         .withNack(throwable -> {

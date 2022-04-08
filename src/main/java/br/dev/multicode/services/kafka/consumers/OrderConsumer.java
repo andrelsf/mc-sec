@@ -1,6 +1,7 @@
 package br.dev.multicode.services.kafka.consumers;
 
 import br.dev.multicode.models.OrderMessage;
+import br.dev.multicode.services.NotificationService;
 import br.dev.multicode.services.OrderSecEventService;
 import br.dev.multicode.services.kafka.producers.InventoryProducer;
 import io.smallrye.reactive.messaging.kafka.api.IncomingKafkaRecordMetadata;
@@ -17,11 +18,11 @@ public class OrderConsumer {
   private final Logger logger = Logger.getLogger(this.getClass());
 
   @Inject InventoryProducer inventoryProducer;
-
+  @Inject NotificationService notificationService;
   @Inject OrderSecEventService orderSecEventService;
 
   @Incoming("sec-new-order")
-  public CompletionStage<Void> receive(Message<OrderMessage> orderMessage)
+  public CompletionStage<Void> receiveNewOrderFromKafka(Message<OrderMessage> orderMessage)
   {
     var metadata = orderMessage.getMetadata(IncomingKafkaRecordMetadata.class)
         .orElseThrow();
@@ -30,7 +31,7 @@ public class OrderConsumer {
     logger.infof("%s - Got a order message: %s", metadata.getTopic(), orderMessageReceived.getOrderId());
 
     orderSecEventService.create(orderMessageReceived);
-    inventoryProducer.doNotification(orderMessageReceived);
+    notificationService.doNotification(orderMessageReceived, inventoryProducer);
 
     return orderMessage.ack();
   }
