@@ -28,7 +28,7 @@ quarkus:
 
 kafka:
   bootstrap:
-    servers: localhost:9092
+    servers: ${KAFKA_BOOTSTRAP_SERVERS:10.200.0.199:9092}
 mp:
   messaging:
     incoming:
