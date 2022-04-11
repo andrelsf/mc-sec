@@ -85,6 +85,24 @@
       <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
 
+    <!-- Jagger Tracing -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-opentracing</artifactId>
+    </dependency>
+
+    <!-- Open Tracing Kafka Client -->
+    <dependency>
+      <groupId>io.opentracing.contrib</groupId>
+      <artifactId>opentracing-kafka-client</artifactId>
+    </dependency>
+
+    <!-- Fault Tolerance Tracing Propagation -->
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-fault-tolerance-tracing-propagation</artifactId>
+    </dependency>
+
     <!-- Config YAML -->
     <dependency>
       <groupId>io.quarkus</groupId>
